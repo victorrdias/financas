@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { MonthlyExpenseForm } from '../components/monthly/MonthlyExpenseForm';
 import { MonthlyExpenseCard } from '../components/monthly/MonthlyExpenseCard';
+import { SkeletonSection } from '../components/ui/Skeleton';
 import { useMonthlyExpenses } from '../hooks/useMonthlyExpenses';
 import { formatCurrency, formatMonth, getCurrentMonth, addMonths, getAmountForMonth, isActiveInMonth } from '../lib/utils';
 
@@ -11,7 +12,7 @@ export function MonthlyPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(getCurrentMonth);
 
-  const { data: expenses = [] } = useMonthlyExpenses();
+  const { data: expenses = [], isLoading } = useMonthlyExpenses();
 
   const continuous = useMemo(
     () => expenses.filter(e => !e.endMonth && isActiveInMonth(e, selectedMonth)),
@@ -67,7 +68,9 @@ export function MonthlyPage() {
               <span className="section-total">{formatCurrency(totalContinuous)}</span>
             )}
           </div>
-          {continuous.length === 0 ? (
+          {isLoading ? (
+            <SkeletonSection rows={3} showActions />
+          ) : continuous.length === 0 ? (
             <div className="empty-state">
               <p>Nenhum gasto contínuo ativo neste mês.</p>
               <Button variant="secondary" size="sm" onClick={() => setAddOpen(true)}>
@@ -93,7 +96,9 @@ export function MonthlyPage() {
               <span className="section-total">{formatCurrency(totalWithEnd)}</span>
             )}
           </div>
-          {withEnd.length === 0 ? (
+          {isLoading ? (
+            <SkeletonSection rows={2} showActions />
+          ) : withEnd.length === 0 ? (
             <div className="empty-state">
               <p>Nenhum gasto com prazo ativo neste mês.</p>
               <Button variant="secondary" size="sm" onClick={() => setAddOpen(true)}>

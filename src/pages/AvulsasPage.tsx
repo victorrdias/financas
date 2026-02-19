@@ -4,6 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Modal } from '../components/ui/Modal';
 import { ExpenseForm } from '../components/expenses/ExpenseForm';
 import { ExpenseCard } from '../components/expenses/ExpenseCard';
+import { SkeletonSection } from '../components/ui/Skeleton';
 import { useOneTimeExpenses } from '../hooks/useOneTimeExpenses';
 import { formatCurrency, formatMonth, getCurrentMonth, addMonths } from '../lib/utils';
 
@@ -11,7 +12,7 @@ export function AvulsasPage() {
   const [addOpen, setAddOpen] = useState(false);
   const [filterMonth, setFilterMonth] = useState(getCurrentMonth);
 
-  const { data: expenses = [] } = useOneTimeExpenses();
+  const { data: expenses = [], isLoading } = useOneTimeExpenses();
 
   const filtered = useMemo(
     () =>
@@ -46,14 +47,16 @@ export function AvulsasPage() {
         </div>
       </div>
 
-      {filtered.length > 0 && (
+      {!isLoading && filtered.length > 0 && (
         <div className="avulsas-summary">
           <span>{filtered.length} gasto{filtered.length !== 1 ? 's' : ''}</span>
           <span className="avulsas-total">{formatCurrency(total)}</span>
         </div>
       )}
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <SkeletonSection rows={5} showActions />
+      ) : filtered.length === 0 ? (
         <div className="empty-state empty-state--center">
           <p>Nenhum gasto avulso em {formatMonth(filterMonth)}.</p>
           <Button onClick={() => setAddOpen(true)}>

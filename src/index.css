@@ -425,6 +425,19 @@ input, select, textarea { font-family: inherit; }
 }
 .empty-state--center { margin-top: 2rem; }
 
+/* ─── Skeleton ─── */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position: 600px 0; }
+}
+.skeleton {
+  display: inline-block;
+  background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
 /* ─── Responsive ─── */
 @media (max-width: 640px) {
   .main-content { padding: 1rem; }

@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight, TrendingDown, CalendarDays, Layers, CheckCir
 import { useMonthlyExpenses, useToggleMonthlyPaid } from '../hooks/useMonthlyExpenses';
 import { useOneTimeExpenses } from '../hooks/useOneTimeExpenses';
 import { Badge } from '../components/ui/Badge';
+import { SkeletonSummaryCard, SkeletonSection } from '../components/ui/Skeleton';
 import {
   formatCurrency,
   formatMonth,
@@ -15,8 +16,9 @@ import {
 
 export function DashboardPage() {
   const [month, setMonth] = useState(getCurrentMonth);
-  const { data: monthly = [] } = useMonthlyExpenses();
-  const { data: oneTime = [] } = useOneTimeExpenses();
+  const { data: monthly = [], isLoading: loadingMonthly } = useMonthlyExpenses();
+  const { data: oneTime = [], isLoading: loadingOneTime } = useOneTimeExpenses();
+  const isLoading = loadingMonthly || loadingOneTime;
   const togglePaid = useToggleMonthlyPaid();
 
   const activeMonthly = useMemo(
@@ -57,37 +59,41 @@ export function DashboardPage() {
       </div>
 
       <div className="summary-grid">
-        <div className="summary-card summary-card--monthly">
-          <div className="summary-card-icon">
-            <CalendarDays size={20} />
-          </div>
-          <div className="summary-card-content">
-            <span className="summary-card-label">Gastos Mensais</span>
-            <span className="summary-card-value">{formatCurrency(totalMonthly)}</span>
-            <span className="summary-card-sub">{activeMonthly.length} ativo{activeMonthly.length !== 1 ? 's' : ''}</span>
-          </div>
-        </div>
-        <div className="summary-card summary-card--onetime">
-          <div className="summary-card-icon">
-            <TrendingDown size={20} />
-          </div>
-          <div className="summary-card-content">
-            <span className="summary-card-label">Gastos Avulsos</span>
-            <span className="summary-card-value">{formatCurrency(totalOneTime)}</span>
-            <span className="summary-card-sub">{monthlyOneTime.length} gasto{monthlyOneTime.length !== 1 ? 's' : ''}</span>
-          </div>
-        </div>
-        <div className="summary-card summary-card--total">
-          <div className="summary-card-icon">
-            <Layers size={20} />
-          </div>
-          <div className="summary-card-content">
-            <span className="summary-card-label">Total do Mês</span>
-            <span className="summary-card-value summary-card-value--total">
-              {formatCurrency(totalMonthly + totalOneTime)}
-            </span>
-          </div>
-        </div>
+        {isLoading ? (
+          <>
+            <SkeletonSummaryCard />
+            <SkeletonSummaryCard />
+            <SkeletonSummaryCard />
+          </>
+        ) : (
+          <>
+            <div className="summary-card summary-card--monthly">
+              <div className="summary-card-icon"><CalendarDays size={20} /></div>
+              <div className="summary-card-content">
+                <span className="summary-card-label">Gastos Mensais</span>
+                <span className="summary-card-value">{formatCurrency(totalMonthly)}</span>
+                <span className="summary-card-sub">{activeMonthly.length} ativo{activeMonthly.length !== 1 ? 's' : ''}</span>
+              </div>
+            </div>
+            <div className="summary-card summary-card--onetime">
+              <div className="summary-card-icon"><TrendingDown size={20} /></div>
+              <div className="summary-card-content">
+                <span className="summary-card-label">Gastos Avulsos</span>
+                <span className="summary-card-value">{formatCurrency(totalOneTime)}</span>
+                <span className="summary-card-sub">{monthlyOneTime.length} gasto{monthlyOneTime.length !== 1 ? 's' : ''}</span>
+              </div>
+            </div>
+            <div className="summary-card summary-card--total">
+              <div className="summary-card-icon"><Layers size={20} /></div>
+              <div className="summary-card-content">
+                <span className="summary-card-label">Total do Mês</span>
+                <span className="summary-card-value summary-card-value--total">
+                  {formatCurrency(totalMonthly + totalOneTime)}
+                </span>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="dashboard-sections">
@@ -97,16 +103,16 @@ export function DashboardPage() {
               <CalendarDays size={16} />
               Mensais ativos
             </h2>
-            {activeMonthly.length > 0 && (() => {
+            {!isLoading && activeMonthly.length > 0 && (() => {
               const paidCount = activeMonthly.filter(e => (e.paidMonths ?? {})[month]).length;
               return (
-                <span className="paid-counter">
-                  {paidCount}/{activeMonthly.length} pagos
-                </span>
+                <span className="paid-counter">{paidCount}/{activeMonthly.length} pagos</span>
               );
             })()}
           </div>
-          {activeMonthly.length === 0 ? (
+          {isLoading ? (
+            <SkeletonSection rows={4} />
+          ) : activeMonthly.length === 0 ? (
             <p className="empty-text">Nenhum gasto mensal ativo neste mês.</p>
           ) : (
             <div className="list-stack">
@@ -151,7 +157,9 @@ export function DashboardPage() {
             <TrendingDown size={16} />
             Avulsos do mês
           </h2>
-          {monthlyOneTime.length === 0 ? (
+          {isLoading ? (
+            <SkeletonSection rows={3} />
+          ) : monthlyOneTime.length === 0 ? (
             <p className="empty-text">Nenhum gasto avulso neste mês.</p>
           ) : (
             <div className="list-stack">
