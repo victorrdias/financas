@@ -1,8 +1,10 @@
 import { useState, useMemo } from 'react';
-import { ChevronLeft, ChevronRight, TrendingDown, CalendarDays, Layers, CheckCircle2, Circle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, TrendingDown, CalendarDays, Layers, CheckCircle2, Circle, Pencil } from 'lucide-react';
 import { useMonthlyExpenses, useToggleMonthlyPaid } from '../hooks/useMonthlyExpenses';
 import { useOneTimeExpenses } from '../hooks/useOneTimeExpenses';
 import { Badge } from '../components/ui/Badge';
+import { Modal } from '../components/ui/Modal';
+import { MonthlyValueForm } from '../components/monthly/MonthlyValueForm';
 import { SkeletonSummaryCard, SkeletonSection } from '../components/ui/Skeleton';
 import {
   formatCurrency,
@@ -20,6 +22,7 @@ export function DashboardPage() {
   const { data: oneTime = [], isLoading: loadingOneTime } = useOneTimeExpenses();
   const isLoading = loadingMonthly || loadingOneTime;
   const togglePaid = useToggleMonthlyPaid();
+  const [valueExpense, setValueExpense] = useState<(typeof monthly)[0] | null>(null);
 
   const activeMonthly = useMemo(
     () => monthly.filter(e => isActiveInMonth(e, month)),
@@ -131,11 +134,20 @@ export function DashboardPage() {
                       }
                     </button>
                     <div className="list-row-left">
-                      <span className={`list-row-name ${isPaid ? 'list-row-name--paid' : ''}`}>{e.name}</span>
+                      <div className="list-row-name-line">
+                        <span className={`list-row-name ${isPaid ? 'list-row-name--paid' : ''}`}>{e.name}</span>
+                        {e.isVariable && (
+                          <button
+                            className={`tag-estimated tag-estimated--btn ${e.monthlyValues[month] !== undefined ? 'tag-estimated--set' : ''}`}
+                            onClick={() => setValueExpense(e)}
+                            title="Registrar valor real do mês"
+                          >
+                            <Pencil size={10} />
+                            {e.monthlyValues[month] !== undefined ? 'editar valor' : 'estimado'}
+                          </button>
+                        )}
+                      </div>
                       <Badge category={e.category} />
-                      {e.isVariable && e.monthlyValues[month] === undefined && (
-                        <span className="tag-estimated">estimado</span>
-                      )}
                     </div>
                     <div className="list-row-right">
                       <span className="list-row-amount">{formatCurrency(getAmountForMonth(e, month))}</span>
@@ -166,9 +178,11 @@ export function DashboardPage() {
               {monthlyOneTime.map(e => (
                 <div key={e.id} className="list-row">
                   <div className="list-row-left">
-                    <span className="list-row-name">{e.description}</span>
+                    <div className="list-row-name-line">
+                      <span className="list-row-name">{e.description}</span>
+                      <span className="list-row-date">{formatDate(e.date)}</span>
+                    </div>
                     <Badge category={e.category} />
-                    <span className="list-row-date">{formatDate(e.date)}</span>
                   </div>
                   <span className="list-row-amount">{formatCurrency(e.amount)}</span>
                 </div>
@@ -181,6 +195,21 @@ export function DashboardPage() {
           )}
         </section>
       </div>
+
+      <Modal
+        open={!!valueExpense}
+        onClose={() => setValueExpense(null)}
+        title="Registrar valor do mês"
+        size="sm"
+      >
+        {valueExpense && (
+          <MonthlyValueForm
+            expense={valueExpense}
+            month={month}
+            onClose={() => setValueExpense(null)}
+          />
+        )}
+      </Modal>
     </div>
   );
 }

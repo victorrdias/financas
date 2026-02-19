@@ -28,9 +28,11 @@ export function ExpenseCard({ expense }: Props) {
           <div className="expense-card-info">
             <div className="expense-card-header">
               <span className="expense-card-name">{expense.description}</span>
-              <Badge category={expense.category} />
             </div>
-            <span className="expense-card-date">{formatDate(expense.date)}</span>
+            <div className="expense-card-meta">
+              <Badge category={expense.category} />
+              <span className="expense-card-date">{formatDate(expense.date)}</span>
+            </div>
           </div>
           <div className="expense-card-right">
             <span className="expense-card-amount">{formatCurrency(expense.amount)}</span>

@@ -36,7 +36,6 @@ export function MonthlyExpenseCard({ expense, selectedMonth }: Props) {
           <div className="expense-card-info">
             <div className="expense-card-header">
               <span className="expense-card-name">{expense.name}</span>
-              <Badge category={expense.category} />
               {expense.isVariable && (
                 <span className={`variable-tag ${hasCustomValue ? 'variable-tag--registered' : ''}`}>
                   <TrendingUp size={11} />
@@ -45,6 +44,7 @@ export function MonthlyExpenseCard({ expense, selectedMonth }: Props) {
               )}
             </div>
             <div className="expense-card-meta">
+              <Badge category={expense.category} />
               {expense.endMonth ? (
                 <span className="meta-item">
                   <CalendarDays size={12} />
