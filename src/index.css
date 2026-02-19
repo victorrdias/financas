@@ -438,6 +438,77 @@ input, select, textarea { font-family: inherit; }
 }
 .empty-state--center { margin-top: 2rem; }
 
+/* ─── Charts ─── */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+.chart-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem 1.5rem;
+  box-shadow: var(--shadow-xs);
+  display: flex; flex-direction: column; gap: 1rem;
+}
+.chart-card-header { display: flex; flex-direction: column; gap: .2rem; }
+.chart-card-title { font-size: .95rem; font-weight: 700; }
+.chart-card-subtitle { font-size: .8rem; color: var(--text-muted); }
+.chart-month-nav {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  padding-bottom: .25rem;
+}
+.chart-empty {
+  text-align: center; padding: 3rem 1rem;
+  font-size: .875rem; color: var(--text-muted);
+}
+.chart-tooltip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: .6rem .85rem;
+  box-shadow: var(--shadow-md);
+  font-size: .8rem;
+  line-height: 1.7;
+}
+.chart-tooltip-label { font-weight: 700; margin-bottom: .15rem; color: var(--text); }
+.chart-tooltip-total { border-top: 1px solid var(--border); margin-top: .25rem; padding-top: .25rem; color: var(--text); }
+.chart-legend {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem .9rem;
+  padding-top: .5rem;
+}
+.chart-legend-item { display: flex; align-items: center; gap: .3rem; font-size: .78rem; color: var(--text-secondary); }
+.chart-legend-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+/* Donut */
+.chart-donut-wrap { position: relative; display: flex; flex-direction: column; gap: .75rem; }
+.donut-center {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 240px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.donut-center-label { font-size: .7rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .05em; }
+.donut-center-value { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.donut-legend { display: flex; flex-direction: column; gap: .3rem; }
+.donut-legend-item {
+  display: grid;
+  grid-template-columns: 10px 1fr auto auto;
+  align-items: center; gap: .5rem;
+  padding: .3rem .4rem;
+  border-radius: 6px;
+  font-size: .8rem;
+  transition: background .1s;
+}
+.donut-legend-item:hover { background: var(--bg); }
+.donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.donut-legend-name { color: var(--text); font-weight: 500; }
+.donut-legend-value { color: var(--text-secondary); font-weight: 600; text-align: right; }
+.donut-legend-pct { color: var(--text-muted); font-size: .72rem; min-width: 32px; text-align: right; }
+
 /* ─── Skeleton ─── */
 @keyframes shimmer {
   0%   { background-position: -600px 0; }

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, CalendarClock, Receipt } from "lucide-react";
+import { LayoutDashboard, CalendarClock, Receipt, BarChart2 } from "lucide-react";
 
 export function Navbar() {
   return (
@@ -33,6 +33,15 @@ export function Navbar() {
           >
             <Receipt size={16} />
             Avulsas
+          </NavLink>
+          <NavLink
+            to="/graficos"
+            className={({ isActive }) =>
+              `nav-link ${isActive ? "nav-link--active" : ""}`
+            }
+          >
+            <BarChart2 size={16} />
+            Gráficos
           </NavLink>
         </nav>
       </div>

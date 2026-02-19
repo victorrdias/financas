@@ -5,6 +5,7 @@ import { Navbar } from './components/layout/Navbar';
 import { DashboardPage } from './pages/DashboardPage';
 import { MonthlyPage } from './pages/MonthlyPage';
 import { AvulsasPage } from './pages/AvulsasPage';
+import { GraficosPage } from './pages/GraficosPage';
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
             <Route path="/" element={<DashboardPage />} />
             <Route path="/mensais" element={<MonthlyPage />} />
             <Route path="/avulsas" element={<AvulsasPage />} />
+            <Route path="/graficos" element={<GraficosPage />} />
           </Routes>
         </main>
       </BrowserRouter>

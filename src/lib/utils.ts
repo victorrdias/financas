@@ -52,3 +52,10 @@ export function isActiveInMonth(expense: MonthlyExpense, month: string): boolean
 export function toMonthString(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
+
+export function formatMonthChart(month: string): string {
+  const [year, m] = month.split('-');
+  const date = new Date(parseInt(year), parseInt(m) - 1, 1);
+  const short = date.toLocaleDateString('pt-BR', { month: 'short' }).replace('.', '');
+  return `${short}/${year.slice(2)}`;
+}
